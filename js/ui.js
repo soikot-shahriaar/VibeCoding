@@ -272,29 +272,29 @@ function renderRequirements() {
     const statusBadge = `<span class="badge ${statusObj.badgeClass}" title="${window.t(statusObj.descKey, { date: window.appState.tender?.submission_deadline, expiry: req.expiryDate })}">${window.t(statusObj.labelKey)}</span>`;
 
     return `
-      <tr data-req-id="${req.id}">
-        <td><span class="req-order-badge">#${String(req.order).padStart(2, '0')}</span></td>
-        <td>
+      <tr data-req-id="${req.id}" class="req-row">
+        <td class="cell-order"><span class="req-order-badge">#${String(req.order).padStart(2, '0')}</span></td>
+        <td class="cell-title">
           <div class="req-name-container">
             <span class="req-title">${title}</span>
             <span class="req-id">${req.id}</span>
           </div>
         </td>
-        <td>${typeBadge}</td>
-        <td>
+        <td class="cell-type">${typeBadge}</td>
+        <td class="cell-match">
           <div class="match-selector-wrapper">
             <select class="match-select" data-req-id="${req.id}">
               ${selectOptions}
             </select>
             ${req.matchedFileId ? `
               <button type="button" class="btn-icon-remove btn-unmatch" data-req-id="${req.id}" title="${window.t('unmatch')}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             ` : ''}
           </div>
         </td>
-        <td>${expiryInputHtml}</td>
-        <td>${statusBadge}</td>
+        <td class="cell-expiry">${expiryInputHtml}</td>
+        <td class="cell-status">${statusBadge}</td>
       </tr>
     `;
   }).join('');

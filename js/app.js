@@ -47,11 +47,18 @@ function initApp() {
     });
   }
 
-  // 4. Setup Sample Tender Loader
+  // 4. Setup Sample Loaders
   const btnLoadSample = document.getElementById('btn-load-sample-top');
   if (btnLoadSample) {
     btnLoadSample.addEventListener('click', () => {
       window.loadSampleTender();
+    });
+  }
+
+  const btnLoadSamplePack = document.getElementById('btn-load-sample-pack');
+  if (btnLoadSamplePack) {
+    btnLoadSamplePack.addEventListener('click', () => {
+      window.loadSamplePdfPack();
     });
   }
 
@@ -276,16 +283,16 @@ window.loadSampleTender = async function() {
  */
 window.loadSamplePdfPack = async function() {
   const sampleFilenames = [
-    'trade_license_2025.pdf',
-    'trade_license_2026.pdf',
-    'tin_certificate.pdf',
-    'vat_certificate.pdf',
+    '01_financial_proposal.pdf',
+    '02_technical_proposal.pdf',
+    '03_tin_certificate.pdf',
+    '04_vat_certificate.pdf',
     'bank_solvency.pdf',
-    'experience_cert.pdf',
     'experience_cert (1).pdf',
-    'technical_proposal.pdf',
-    'financial_proposal.pdf',
-    'signed_declaration.pdf'
+    'experience_cert.pdf',
+    'scan_0042.pdf',
+    'trade_license_2025.pdf',
+    'trade_license_2026.pdf'
   ];
 
   window.showToast(window.t('toast_loading_samples'), 'info');
@@ -293,8 +300,16 @@ window.loadSamplePdfPack = async function() {
 
   for (const filename of sampleFilenames) {
     try {
-      const res = await fetch(`sample_data/sample_pdfs/${encodeURIComponent(filename)}`);
-      if (!res.ok) continue;
+      const encodedName = encodeURIComponent(filename);
+      let res = await fetch(`sample_data/sample_pdfs/${encodedName}`);
+      if (!res.ok) {
+        res = await fetch(`sample_data/${encodedName}`);
+      }
+      if (!res.ok) {
+        console.warn('Could not fetch sample PDF:', filename);
+        continue;
+      }
+
       const arrayBuffer = await res.arrayBuffer();
       const hash = await window.calculateFileHash(arrayBuffer);
       const inspection = await window.inspectPdf(arrayBuffer, filename);

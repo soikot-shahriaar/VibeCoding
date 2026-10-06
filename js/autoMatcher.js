@@ -41,8 +41,8 @@ const KEYWORD_MAP = [
     reqKeywords: ['financial', 'commercial', 'boq', 'আর্থিক']
   },
   {
-    terms: ['declaration', 'integrity', 'signed', 'অঙ্গীকারনামা'],
-    reqKeywords: ['declaration', 'integrity', 'অঙ্গীকারনামা']
+    terms: ['declaration', 'integrity', 'signed', 'scan', 'scanned', 'অঙ্গীকারনামা'],
+    reqKeywords: ['declaration', 'integrity', 'অঙ্গীকারনামা', 'signed']
   }
 ];
 
