@@ -217,7 +217,8 @@ function getValidationSummary() {
         status: statusObj.status,
         labelKey: statusObj.labelKey,
         descKey: statusObj.descKey,
-        deadline: appState.tender.submission_deadline
+        deadline: appState.tender.submission_deadline,
+        expiryDate: req.expiryDate
       });
     }
   }

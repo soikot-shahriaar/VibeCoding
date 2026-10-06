@@ -159,7 +159,9 @@ function renderFileList() {
 
     let errorTag = '';
     if (file.error) {
-      errorTag = `<span class="badge badge-expired" title="${file.error}">${window.t('corrupted_pdf')}</span>`;
+      const isPassword = file.errorType === 'PASSWORD_PROTECTED';
+      const badgeText = isPassword ? window.t('password_pdf') : window.t('corrupted_pdf');
+      errorTag = `<span class="badge badge-expired" title="${file.error}">${badgeText}</span>`;
     }
 
     const pagesLabel = file.pageCount === 1 ? window.t('page') : window.t('pages');
@@ -169,8 +171,7 @@ function renderFileList() {
         <div class="file-info">
           <div class="file-name" title="${file.name}">${file.name}</div>
           <div class="file-meta">
-            <span>${file.pageCount} ${pagesLabel}</span>
-            <span>•</span>
+            ${file.pageCount > 0 ? `<span>${file.pageCount} ${pagesLabel}</span><span>•</span>` : ''}
             <span>${formatBytes(file.size)}</span>
             ${duplicateTag}
             ${assignedTag}
@@ -235,7 +236,7 @@ function renderRequirements() {
 
     // Dropdown options
     // Available files: unassigned OR currently matched to this requirement
-    // Disallow duplicate secondary files
+    // Must NOT be erroneous or duplicate secondary file
     const availableFiles = files.filter(f => !f.error && (!f.duplicateOfId || f.id === req.matchedFileId));
     
     let selectOptions = `<option value="">${window.t('select_file_placeholder')}</option>`;
@@ -268,7 +269,7 @@ function renderRequirements() {
     }
 
     // Status Badge
-    const statusBadge = `<span class="badge ${statusObj.badgeClass}" title="${window.t(statusObj.descKey, { date: window.appState.tender?.submission_deadline })}">${window.t(statusObj.labelKey)}</span>`;
+    const statusBadge = `<span class="badge ${statusObj.badgeClass}" title="${window.t(statusObj.descKey, { date: window.appState.tender?.submission_deadline, expiry: req.expiryDate })}">${window.t(statusObj.labelKey)}</span>`;
 
     return `
       <tr data-req-id="${req.id}">
@@ -358,7 +359,7 @@ function renderValidationSummary() {
       const issueItems = summary.blockingIssues.map(issue => `
         <li>
           <strong>#${String(issue.order).padStart(2, '0')} ${issue.title}</strong>: 
-          ${window.t(issue.descKey, { date: issue.deadline })}
+          ${window.t(issue.descKey, { date: issue.deadline, expiry: issue.expiryDate })}
         </li>
       `).join('');
 
@@ -405,6 +406,7 @@ function exportChecklistToCsv() {
     return;
   }
 
+  const isBn = window.appState.language === 'bn';
   const rows = [];
   rows.push(['Tender ID', tender.tender_id]);
   rows.push(['Tender Title', `"${tender.title.replace(/"/g, '""')}"`]);
@@ -422,10 +424,10 @@ function exportChecklistToCsv() {
       req.id,
       `"${req.title_en.replace(/"/g, '""')}"`,
       `"${req.title_bn.replace(/"/g, '""')}"`,
-      req.mandatory ? 'Mandatory' : 'Optional',
-      matchedFile ? `"${matchedFile.name.replace(/"/g, '""')}"` : 'None',
+      req.mandatory ? (isBn ? 'বাধ্যতামূলক' : 'Mandatory') : (isBn ? 'ঐচ্ছিক' : 'Optional'),
+      matchedFile ? `"${matchedFile.name.replace(/"/g, '""')}"` : (isBn ? 'নেই' : 'None'),
       req.expiryDate || 'N/A',
-      statusObj.status
+      window.t(statusObj.labelKey)
     ]);
   }
 
@@ -433,7 +435,7 @@ function exportChecklistToCsv() {
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const filename = `${tender.tender_id}_Checklist.csv`;
   window.downloadBlob(blob, filename, 'text/csv');
-  window.showToast(`Exported ${filename}`, 'success');
+  window.showToast(window.t('toast_csv_exported', { filename }), 'success');
 }
 
 /**

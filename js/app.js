@@ -103,9 +103,9 @@ function initApp() {
   if (btnClearFiles) {
     btnClearFiles.addEventListener('click', () => {
       if (window.appState.files.length === 0) return;
-      if (confirm('Are you sure you want to remove all uploaded files?')) {
+      if (confirm(window.t('confirm_clear_all_files'))) {
         window.clearAllFiles();
-        window.showToast('All files cleared.', 'info');
+        window.showToast(window.t('toast_all_files_cleared'), 'info');
       }
     });
   }
@@ -118,7 +118,7 @@ function initApp() {
       if (result.matchedCount > 0) {
         window.showToast(window.t('auto_match_success', { count: result.matchedCount }), 'success');
       } else {
-        window.showToast('No matching files found for remaining requirements.', 'warning');
+        window.showToast(window.t('toast_no_auto_matches'), 'warning');
       }
     });
   }
@@ -128,7 +128,7 @@ function initApp() {
   if (btnResetMatches) {
     btnResetMatches.addEventListener('click', () => {
       window.resetAllMatches();
-      window.showToast('All document matches have been reset.', 'info');
+      window.showToast(window.t('toast_matches_reset'), 'info');
     });
   }
 
@@ -151,7 +151,6 @@ function initApp() {
   // 11. Modal Handlers
   const modalOverlay = document.getElementById('success-modal');
   const modalCloseBtn = document.getElementById('modal-close-btn');
-  const modalDownloadBtn = document.getElementById('modal-download-btn');
 
   if (modalCloseBtn && modalOverlay) {
     modalCloseBtn.addEventListener('click', () => {
@@ -170,6 +169,7 @@ function initApp() {
 
 /**
  * Handle incoming PDF file list (from file dialog or drag-and-drop)
+ * Robust error handling for non-PDFs, malformed PDFs, and password-protected PDFs
  */
 async function handleIncomingPdfFiles(fileList) {
   const incomingFiles = Array.from(fileList);
@@ -177,7 +177,7 @@ async function handleIncomingPdfFiles(fileList) {
 
   for (const rawFile of incomingFiles) {
     // 1. Validate MIME / Extension
-    const isPdf = rawFile.type === 'application/pdf' || rawFile.name.toLowerCase().endsWith('.pdf');
+    const isPdf = (rawFile.type === 'application/pdf') || rawFile.name.toLowerCase().endsWith('.pdf');
     if (!isPdf) {
       window.showToast(window.t('err_not_a_pdf', { name: rawFile.name }), 'error');
       continue;
@@ -190,7 +190,12 @@ async function handleIncomingPdfFiles(fileList) {
       const hash = await window.calculateFileHash(arrayBuffer);
       
       // Inspect PDF structure and page count using pdf-lib
-      const inspection = await window.inspectPdf(arrayBuffer);
+      const inspection = await window.inspectPdf(arrayBuffer, rawFile.name);
+
+      if (!inspection.isValid) {
+        // Show clear user-friendly toast for password or corruption
+        window.showToast(inspection.errorMessage, 'error', 6000);
+      }
 
       validFilesToProcess.push({
         id: 'file_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(),
@@ -200,7 +205,8 @@ async function handleIncomingPdfFiles(fileList) {
         arrayBuffer: arrayBuffer,
         hash: hash,
         pageCount: inspection.pageCount,
-        error: inspection.error,
+        error: inspection.errorMessage,
+        errorType: inspection.errorType,
         isDuplicate: false,
         duplicateOfId: null,
         duplicateOfName: null,
@@ -208,14 +214,17 @@ async function handleIncomingPdfFiles(fileList) {
       });
     } catch (err) {
       console.error('Error processing uploaded file:', rawFile.name, err);
-      window.showToast(`Error loading ${rawFile.name}: ${err.message}`, 'error');
+      window.showToast(window.t('err_corrupt_pdf', { name: rawFile.name }), 'error');
     }
   }
 
   if (validFilesToProcess.length > 0) {
     try {
       window.addFiles(validFilesToProcess);
-      window.showToast(`Uploaded ${validFilesToProcess.length} PDF file(s).`, 'success');
+      const validCount = validFilesToProcess.filter(f => !f.error).length;
+      if (validCount > 0) {
+        window.showToast(window.t('toast_files_uploaded', { count: validFilesToProcess.length }), 'success');
+      }
     } catch (err) {
       window.showToast(err.message, 'error');
     }
@@ -279,7 +288,7 @@ window.loadSamplePdfPack = async function() {
     'signed_declaration.pdf'
   ];
 
-  window.showToast('Loading 10 sample PDF files for acceptance testing...', 'info');
+  window.showToast(window.t('toast_loading_samples'), 'info');
   const loadedFiles = [];
 
   for (const filename of sampleFilenames) {
@@ -288,7 +297,7 @@ window.loadSamplePdfPack = async function() {
       if (!res.ok) continue;
       const arrayBuffer = await res.arrayBuffer();
       const hash = await window.calculateFileHash(arrayBuffer);
-      const inspection = await window.inspectPdf(arrayBuffer);
+      const inspection = await window.inspectPdf(arrayBuffer, filename);
 
       loadedFiles.push({
         id: 'file_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(),
@@ -298,7 +307,8 @@ window.loadSamplePdfPack = async function() {
         arrayBuffer: arrayBuffer,
         hash: hash,
         pageCount: inspection.pageCount,
-        error: inspection.error,
+        error: inspection.errorMessage,
+        errorType: inspection.errorType,
         isDuplicate: false,
         duplicateOfId: null,
         duplicateOfName: null,
@@ -311,7 +321,7 @@ window.loadSamplePdfPack = async function() {
 
   if (loadedFiles.length > 0) {
     window.addFiles(loadedFiles);
-    window.showToast(`Loaded ${loadedFiles.length} sample PDF files.`, 'success');
+    window.showToast(window.t('toast_loaded_samples', { count: loadedFiles.length }), 'success');
   }
 };
 
@@ -348,10 +358,15 @@ async function executePackageGeneration() {
       
       const docListContainer = document.getElementById('modal-pkg-doclist');
       if (docListContainer) {
+        const isBn = window.appState.language === 'bn';
+        const pageWord = isBn ? window.t('page') : 'Pages';
+        const ppWord = window.t('pp_label');
+        const pWord = window.t('p_label');
+
         docListContainer.innerHTML = result.includedDocuments.map(d => `
           <div class="modal-stat-row">
             <span class="modal-stat-label">#${String(d.order).padStart(2, '0')} ${d.title} (${d.fileName})</span>
-            <span class="modal-stat-value">Pages ${d.startPage}–${d.endPage} (${d.pageCount} ${d.pageCount > 1 ? 'pp.' : 'p.'})</span>
+            <span class="modal-stat-value">${pageWord} ${d.startPage}–${d.endPage} (${d.pageCount} ${d.pageCount > 1 ? ppWord : pWord})</span>
           </div>
         `).join('');
       }

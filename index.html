@@ -15,14 +15,8 @@
   <!-- Core CSS -->
   <link rel="stylesheet" href="styles/main.css">
 
-  <!-- PDF-lib for browser-side PDF merging and footer generation -->
+  <!-- Local PDF-lib for 100% offline browser-side PDF processing and merging -->
   <script src="lib/pdf-lib.min.js"></script>
-  <script>
-    // CDN Fallback if local bundle is missing
-    if (typeof PDFLib === 'undefined') {
-      document.write('<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
-    }
-  </script>
 </head>
 <body>
 
@@ -54,7 +48,7 @@
 
         <button type="button" class="btn-header" id="btn-load-sample-pack" onclick="window.loadSamplePdfPack()" title="Load Sample PDF Documents (10 Files)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <span>Sample PDFs</span>
+          <span data-i18n="sample_pdfs_btn">Sample PDFs</span>
         </button>
 
         <!-- Bilingual Switcher -->
@@ -234,7 +228,7 @@
             <!-- Main Generator Action -->
             <div class="action-footer">
               <div>
-                <p style="font-size: 0.8rem; color: #64748b;">All documents are processed purely in your browser. No files are uploaded to any server.</p>
+                <p style="font-size: 0.8rem; color: #64748b;" data-i18n="client_side_notice">All documents are processed purely in your browser. No files are uploaded to any server.</p>
               </div>
               <button type="button" class="btn-generate" id="btn-generate-package" disabled>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -258,7 +252,7 @@
         <button type="button" class="modal-close-btn" id="modal-close-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size: 0.88rem; color: #334155; margin-bottom: 1rem;">
+        <p style="font-size: 0.88rem; color: #334155; margin-bottom: 1rem;" data-i18n="modal_success_desc">
           Your final compiled tender submission package is ready. All source documents have been merged in exact order with official cover and page footers.
         </p>
 

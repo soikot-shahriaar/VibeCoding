@@ -17,7 +17,8 @@ const translations = {
     bidder: "Bidder Name",
     submission_deadline: "Submission Deadline",
     load_json: "Load requirements.json",
-    load_sample_json: "Load Sample Tender",
+    load_sample_json: "Sample Tender",
+    sample_pdfs_btn: "Sample PDFs",
     no_tender_loaded: "No tender configuration loaded. Upload a requirements.json file or load the sample tender to begin.",
     tender_loaded_success: "Tender configuration loaded successfully.",
     
@@ -39,6 +40,7 @@ const translations = {
     assigned: "Assigned",
     unassigned: "Unassigned",
     corrupted_pdf: "Damaged / Unreadable PDF",
+    password_pdf: "Password Protected / Encrypted",
     
     // Checklist Section
     checklist_heading: "Document Matching Checklist",
@@ -69,7 +71,7 @@ const translations = {
     // Status descriptions/reasons
     status_desc_missing: "Mandatory document has no matched file.",
     status_desc_expiry_needed: "Please enter the expiry date for this document.",
-    status_desc_expired: "Document expires before the submission deadline ({date}).",
+    status_desc_expired: "Document expires on {expiry} before the submission deadline ({date}).",
     status_desc_not_provided: "Optional document was not provided (allowed).",
     status_desc_ok: "Document is ready and valid.",
     
@@ -85,24 +87,36 @@ const translations = {
     // Generate Section
     generate_btn: "Generate Tender Package PDF",
     generating_btn: "Generating Final Package...",
-    export_csv_btn: "Export Checklist (CSV)",
+    export_csv_btn: "Export CSV",
     preview_btn: "Preview Package",
+    client_side_notice: "All documents are processed purely in your browser. No files are uploaded to any server.",
     disabled_reason_no_tender: "Please load a tender requirements.json file first.",
     disabled_reason_blocking: "{count} blocking issue(s) remain to be resolved.",
     disabled_reason_no_files: "No files have been matched to mandatory requirements.",
     
     // Success Modal
     modal_success_title: "Tender Package Generated Successfully!",
+    modal_success_desc: "Your final compiled tender submission package is ready. All source documents have been merged in exact order with official cover and page footers.",
     modal_package_name: "Package Filename:",
     modal_total_pages: "Total Pages:",
     modal_included_docs: "Included Documents:",
     modal_download_btn: "Download PDF Package",
     modal_close_btn: "Close",
     
-    // Toast & Alerts
+    // Toast & Alerts & Confirmations
+    confirm_clear_all_files: "Are you sure you want to remove all uploaded files?",
+    toast_all_files_cleared: "All files cleared.",
+    toast_no_auto_matches: "No matching files found for remaining requirements.",
+    toast_matches_reset: "All document matches have been reset.",
+    toast_files_uploaded: "Uploaded {count} PDF file(s).",
+    toast_loading_samples: "Loading 10 sample PDF files for acceptance testing...",
+    toast_loaded_samples: "Loaded {count} sample PDF files.",
+    toast_csv_exported: "Exported {filename}",
     err_invalid_json: "Invalid JSON format or corrupted file.",
     err_missing_json_fields: "JSON is missing required tender or requirements fields.",
     err_not_a_pdf: "File '{name}' is not a valid PDF document.",
+    err_corrupt_pdf: "File '{name}' is damaged, invalid, or corrupted.",
+    err_password_pdf: "File '{name}' is password-protected or encrypted. Please provide an unencrypted PDF.",
     err_file_limit_exceeded: "Cannot upload more than 30 files.",
     err_size_limit_exceeded: "Total uploaded size exceeds 50 MB limit.",
     err_duplicate_file_assign: "This file is an exact duplicate of another uploaded file and cannot be assigned.",
@@ -120,7 +134,9 @@ const translations = {
     pdf_th_doc: "Document Title",
     pdf_th_pages: "Pages",
     pdf_th_start_page: "Starting Page",
-    pdf_footer_text: "{tender_id} | Page {page} of {total}"
+    pdf_footer_text: "{tender_id} | Page {page} of {total}",
+    pp_label: "pp.",
+    p_label: "p."
   },
   bn: {
     app_title: "টেন্ডারপ্যাক (TenderPack)",
@@ -137,7 +153,8 @@ const translations = {
     bidder: "দরপত্রদাতার নাম (Bidder)",
     submission_deadline: "জমা দেওয়ার শেষ সময়",
     load_json: "requirements.json আপলোড করুন",
-    load_sample_json: "নমুনা টেন্ডার লোড করুন",
+    load_sample_json: "নমুনা টেন্ডার",
+    sample_pdfs_btn: "নমুনা পিডিএফ",
     no_tender_loaded: "কোনো টেন্ডার কনফিগারেশন লোড করা হয়নি। requirements.json ফাইল আপলোড করুন অথবা নমুনা টেন্ডার লোড করুন।",
     tender_loaded_success: "টেন্ডার কনফিগারেশন সফলভাবে লোড হয়েছে।",
     
@@ -159,6 +176,7 @@ const translations = {
     assigned: "সংযুক্ত",
     unassigned: "অসংযুক্ত",
     corrupted_pdf: "ত্রুটিপূর্ণ / অপাঠ্য পিডিএফ",
+    password_pdf: "পাসওয়ার্ড সুরক্ষিত / এনক্রিপ্ট করা",
     
     // Checklist Section
     checklist_heading: "ডকুমেন্ট মেলানোর চেকলিস্ট",
@@ -189,7 +207,7 @@ const translations = {
     // Status descriptions/reasons
     status_desc_missing: "বাধ্যতামূলক ডকুমেন্ট সংযুক্ত করা হয়নি।",
     status_desc_expiry_needed: "অনুগ্রহ করে এই ডকুমেন্টের মেয়াদ উত্তীর্ণের তারিখ লিখুন।",
-    status_desc_expired: "ডকুমেন্টের মেয়াদ টেন্ডার জমা দেওয়ার তারিখের ({date}) পূর্বে শেষ হয়েছে।",
+    status_desc_expired: "ডকুমেন্টের মেয়াদ ({expiry}) টেন্ডার জমা দেওয়ার তারিখের ({date}) পূর্বে শেষ হয়েছে।",
     status_desc_not_provided: "ঐচ্ছিক ডকুমেন্ট প্রদান করা হয়নি (অনুমোদিত)।",
     status_desc_ok: "ডকুমেন্ট সম্পূর্ণ এবং বৈধ।",
     
@@ -205,24 +223,36 @@ const translations = {
     // Generate Section
     generate_btn: "চূড়ান্ত টেন্ডার প্যাকেজ তৈরি করুন",
     generating_btn: "প্যাকেজ তৈরি হচ্ছে...",
-    export_csv_btn: "চেকলিস্ট ডাউনলোড (CSV)",
+    export_csv_btn: "চেকলিস্ট (CSV)",
     preview_btn: "প্যাকেজ প্রিভিউ",
+    client_side_notice: "সব ডকুমেন্ট সম্পূর্ণভাবে আপনার ব্রাউজারে প্রক্রিয়াকৃত। কোনো ফাইল সার্ভারে আপলোড করা হয় না।",
     disabled_reason_no_tender: "অনুগ্রহ করে প্রথমে requirements.json ফাইল লোড করুন।",
     disabled_reason_blocking: "{count}টি অমীমাংসিত সমস্যা সমাধান করতে হবে।",
     disabled_reason_no_files: "বাধ্যতামূলক ডকুমেন্টে কোনো ফাইল সংযুক্ত করা হয়নি।",
     
     // Success Modal
     modal_success_title: "টেন্ডার প্যাকেজ সফলভাবে তৈরি হয়েছে!",
+    modal_success_desc: "আপনার চূড়ান্ত টেন্ডার প্যাকেজ প্রস্তুত হয়েছে। সকল ডকুমেন্ট সঠিক ক্রমানুসারে অফিশিয়াল কভার ও পেজ ফুটারসহ মার্জ করা হয়েছে।",
     modal_package_name: "প্যাকেজ ফাইলনাম:",
     modal_total_pages: "মোট পৃষ্ঠা সংখ্যা:",
     modal_included_docs: "সংযুক্ত ডকুমেন্টস:",
     modal_download_btn: "পিডিএফ প্যাকেজ ডাউনলোড",
     modal_close_btn: "বন্ধ করুন",
     
-    // Toast & Alerts
+    // Toast & Alerts & Confirmations
+    confirm_clear_all_files: "আপনি কি সব আপলোডকৃত ফাইল মুছে ফেলতে চান?",
+    toast_all_files_cleared: "সব ফাইল মুছে ফেলা হয়েছে।",
+    toast_no_auto_matches: "অবশিষ্ট রিকোয়ারমেন্টের জন্য কোনো উপযুক্ত ফাইল পাওয়া যায়নি।",
+    toast_matches_reset: "সব ডকুমেন্ট সংযোগ রিসেট করা হয়েছে।",
+    toast_files_uploaded: "{count}টি পিডিএফ ফাইল আপলোড হয়েছে।",
+    toast_loading_samples: "নমুনা পরীক্ষার জন্য ১০টি পিডিএফ ফাইল লোড হচ্ছে...",
+    toast_loaded_samples: "{count}টি নমুনা পিডিএফ ফাইল লোড করা হয়েছে।",
+    toast_csv_exported: "{filename} এক্সপোর্ট সম্পন্ন হয়েছে।",
     err_invalid_json: "ভুল JSON ফরম্যাট অথবা ক্ষতিগ্রস্ত ফাইল।",
     err_missing_json_fields: "JSON ফাইলে প্রয়োজনীয় টেন্ডার অথবা রিকোয়ারমেন্ট তথ্য অনুপস্থিত।",
     err_not_a_pdf: "'{name}' ফাইলটি বৈধ পিডিএফ নয়।",
+    err_corrupt_pdf: "'{name}' ফাইলটি ক্ষতিগ্রস্ত বা অপাঠ্য।",
+    err_password_pdf: "'{name}' ফাইলটি পাসওয়ার্ড সুরক্ষিত বা এনক্রিপ্ট করা। পাসওয়ার্ড ছাড়া পিডিএফ প্রদান করুন।",
     err_file_limit_exceeded: "সর্বোচ্চ ৩০টির বেশি ফাইল আপলোড করা যাবে না।",
     err_size_limit_exceeded: "ফাইলের মোট সাইজ ৫০ মেগাবাইটের বেশি হতে পারবে না।",
     err_duplicate_file_assign: "এই ফাইলটি অন্য একটি ফাইলের হুবহু প্রতিলিপি (ডুপ্লিকেট), তাই সংযুক্ত করা যাবে না।",
@@ -240,7 +270,9 @@ const translations = {
     pdf_th_doc: "Document Title",
     pdf_th_pages: "Pages",
     pdf_th_start_page: "Starting Page",
-    pdf_footer_text: "{tender_id} | Page {page} of {total}"
+    pdf_footer_text: "{tender_id} | Page {page} of {total}",
+    pp_label: "পৃ.",
+    p_label: "পৃ."
   }
 };
 
