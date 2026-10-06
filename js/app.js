@@ -57,8 +57,8 @@ function initApp() {
 
   const btnLoadSamplePack = document.getElementById('btn-load-sample-pack');
   if (btnLoadSamplePack) {
-    btnLoadSamplePack.addEventListener('click', () => {
-      window.loadSamplePdfPack();
+    btnLoadSamplePack.addEventListener('click', async () => {
+      await window.loadSamplePdfPack();
     });
   }
 
@@ -192,10 +192,10 @@ async function handleIncomingPdfFiles(fileList) {
 
     try {
       const arrayBuffer = await rawFile.arrayBuffer();
-      
+
       // Calculate SHA-256 hash for exact duplicate detection
       const hash = await window.calculateFileHash(arrayBuffer);
-      
+
       // Inspect PDF structure and page count using pdf-lib
       const inspection = await window.inspectPdf(arrayBuffer, rawFile.name);
 
@@ -241,7 +241,7 @@ async function handleIncomingPdfFiles(fileList) {
 /**
  * Load Sample Tender Data
  */
-window.loadSampleTender = async function() {
+window.loadSampleTender = async function () {
   try {
     const res = await fetch('sample_data/requirements.json');
     if (!res.ok) throw new Error('Could not fetch sample requirements.json');
@@ -281,7 +281,7 @@ window.loadSampleTender = async function() {
 /**
  * Helper to load all sample test PDFs (Acceptance Testing helper)
  */
-window.loadSamplePdfPack = async function() {
+window.loadSamplePdfPack = async function () {
   const sampleFilenames = [
     '01_financial_proposal.pdf',
     '02_technical_proposal.pdf',
@@ -300,11 +300,7 @@ window.loadSamplePdfPack = async function() {
 
   for (const filename of sampleFilenames) {
     try {
-      const encodedName = encodeURIComponent(filename);
-      let res = await fetch(`sample_data/sample_pdfs/${encodedName}`);
-      if (!res.ok) {
-        res = await fetch(`sample_data/${encodedName}`);
-      }
+      const res = await fetch(`sample_data/sample_pdfs/${encodeURIComponent(filename)}`);
       if (!res.ok) {
         console.warn('Could not fetch sample PDF:', filename);
         continue;
@@ -370,7 +366,7 @@ async function executePackageGeneration() {
     if (modal) {
       document.getElementById('modal-pkg-filename').textContent = result.filename;
       document.getElementById('modal-pkg-pages').textContent = result.totalPages;
-      
+
       const docListContainer = document.getElementById('modal-pkg-doclist');
       if (docListContainer) {
         const isBn = window.appState.language === 'bn';
