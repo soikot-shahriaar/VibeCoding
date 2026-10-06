@@ -121,6 +121,8 @@ const translations = {
     err_size_limit_exceeded: "Total uploaded size exceeds 50 MB limit.",
     err_duplicate_file_assign: "This file is an exact duplicate of another uploaded file and cannot be assigned.",
     err_generation_failed: "PDF generation encountered an error: {error}",
+    err_sample_load_failed: "Sample PDF loading failed. Could not load: {files}",
+    warn_file_protocol: "Please open TenderPack through a web server or GitHub Pages. Sample files cannot be fetched directly from file://.",
     success_json_loaded: "Successfully loaded requirements for: {tender_id}",
     success_package_ready: "Tender package compiled ({pages} pages). Download ready.",
     
@@ -257,6 +259,8 @@ const translations = {
     err_size_limit_exceeded: "ফাইলের মোট সাইজ ৫০ মেগাবাইটের বেশি হতে পারবে না।",
     err_duplicate_file_assign: "এই ফাইলটি অন্য একটি ফাইলের হুবহু প্রতিলিপি (ডুপ্লিকেট), তাই সংযুক্ত করা যাবে না।",
     err_generation_failed: "পিডিএফ তৈরিতে ত্রুটি দেখা দিয়েছে: {error}",
+    err_sample_load_failed: "নমুনা পিডিএফ লোড ব্যর্থ হয়েছে। নিম্নলিখিত ফাইল লোড করা যায়নি: {files}",
+    warn_file_protocol: "দয়া করে একটি ওয়েব সার্ভার বা GitHub Pages এর মাধ্যমে টেন্ডারপ্যাক ওপেন করুন। file:// প্রোটোকল থেকে সরাসরি নমুনা ফাইল ফেচ করা সম্ভব নয়।",
     success_json_loaded: "টেন্ডার তথ্য সফলভাবে লোড হয়েছে: {tender_id}",
     success_package_ready: "টেন্ডার প্যাকেজ প্রস্তুত ({pages} পৃষ্ঠা)। ডাউনলোড করুন।",
     

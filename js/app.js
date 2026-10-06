@@ -242,9 +242,14 @@ async function handleIncomingPdfFiles(fileList) {
  * Load Sample Tender Data
  */
 window.loadSampleTender = async function () {
+  if (window.location.protocol === 'file:') {
+    window.showToast(window.t('warn_file_protocol'), 'warning', 6000);
+  }
+
   try {
-    const res = await fetch('sample_data/requirements.json');
-    if (!res.ok) throw new Error('Could not fetch sample requirements.json');
+    const url = new URL('sample_data/requirements.json', document.baseURI).href;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: Could not fetch requirements.json`);
     const json = await res.json();
     const validated = window.validateRequirementsJson(json);
     window.setRequirements(validated.tender, validated.requirements);
@@ -282,6 +287,10 @@ window.loadSampleTender = async function () {
  * Helper to load all sample test PDFs (Acceptance Testing helper)
  */
 window.loadSamplePdfPack = async function () {
+  if (window.location.protocol === 'file:') {
+    window.showToast(window.t('warn_file_protocol'), 'warning', 6000);
+  }
+
   const sampleFilenames = [
     '01_financial_proposal.pdf',
     '02_technical_proposal.pdf',
@@ -297,12 +306,15 @@ window.loadSamplePdfPack = async function () {
 
   window.showToast(window.t('toast_loading_samples'), 'info');
   const loadedFiles = [];
+  const failedFiles = [];
 
   for (const filename of sampleFilenames) {
+    const fileUrl = new URL(`sample_data/sample_pdfs/${encodeURIComponent(filename)}`, document.baseURI).href;
     try {
-      const res = await fetch(`sample_data/sample_pdfs/${encodeURIComponent(filename)}`);
+      const res = await fetch(fileUrl);
       if (!res.ok) {
-        console.warn('Could not fetch sample PDF:', filename);
+        console.error(`Fetch failed for ${filename}: HTTP ${res.status} at ${fileUrl}`);
+        failedFiles.push({ filename, status: res.status, url: fileUrl, error: `HTTP ${res.status}` });
         continue;
       }
 
@@ -326,12 +338,19 @@ window.loadSamplePdfPack = async function () {
         isAssigned: false
       });
     } catch (e) {
-      console.warn('Failed to load sample pdf:', filename, e);
+      console.error(`Network or parse error loading ${filename}:`, e);
+      failedFiles.push({ filename, status: 0, url: fileUrl, error: e.message || 'Network error' });
     }
   }
 
   if (loadedFiles.length > 0) {
     window.addFiles(loadedFiles);
+  }
+
+  if (failedFiles.length > 0) {
+    const failedNames = failedFiles.map(f => f.filename).join(', ');
+    window.showToast(window.t('err_sample_load_failed', { files: failedNames }), 'error', 8000);
+  } else if (loadedFiles.length > 0) {
     window.showToast(window.t('toast_loaded_samples', { count: loadedFiles.length }), 'success');
   }
 };

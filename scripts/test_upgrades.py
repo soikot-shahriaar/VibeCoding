@@ -52,7 +52,7 @@ with open('index.html', 'r', encoding='utf-8') as f:
 
 assert 'unpkg.com' not in html_code, "External unpkg fallback should be removed from index.html"
 assert 'cdn.jsdelivr.net' not in html_code, "External cdnjs/jsdelivr script tags should not be in index.html"
-assert '<script src="lib/pdf-lib.min.js"></script>' in html_code, "Local lib/pdf-lib.min.js must be referenced"
+assert '<script src="./lib/pdf-lib.min.js"></script>' in html_code or '<script src="lib/pdf-lib.min.js"></script>' in html_code, "Local lib/pdf-lib.min.js must be referenced"
 assert os.path.exists('lib/pdf-lib.min.js'), "lib/pdf-lib.min.js must exist locally"
 assert os.path.getsize('lib/pdf-lib.min.js') > 100000, "lib/pdf-lib.min.js must be a valid non-empty bundle"
 print(f"[PASS] UPGRADE 3: Local pdf-lib verified ({os.path.getsize('lib/pdf-lib.min.js')} bytes). No CDN dependency!")
