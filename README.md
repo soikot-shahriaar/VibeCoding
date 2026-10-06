@@ -16,16 +16,16 @@ All processing, parsing, duplicate hash calculations, and PDF generation happen 
 ## 👤 Contest & Participant Details
 
 - **Project Name:** TenderPack (Tender Document Package Builder)
-- **Participant Name:** `[Participant Name]`
-- **Registration Number:** `[Registration Number]`
-- **Live HTTPS URL:** `[Live Deployment URL]`
+- **Participant Name:** Md. Shahriar Hasan
+- **Registration Number:** N/A
+- **Live HTTPS URL:** https://soikot-shahriaar.github.io/VibeCoding/
 - **License:** MIT License (retained in repository)
 
 ---
 
 ## 🚀 How to Run Locally
 
-Because the project is built purely with vanilla web standards and browser-side libraries, no complicated build step or package manager is required.
+Because browser `fetch()` is used to load sample files (`requirements.json` and the 10 sample PDFs), running the application through an **HTTP/HTTPS server** is strongly recommended.
 
 ### Method 1: Local HTTP Server (Recommended)
 ```bash
@@ -34,8 +34,24 @@ python -m http.server 8000
 ```
 Then navigate to: **`http://localhost:8000`** in Google Chrome.
 
-### Method 2: Direct File Open
-Double click or open `index.html` directly in any modern Google Chrome browser.
+### Method 2: Direct File Open (`file://`)
+Opening `index.html` directly via `file://` supports manual PDF document uploads and JSON file browsing. Sample pack fetching requires an HTTP/HTTPS environment or the live GitHub Pages site.
+
+---
+
+## 📸 Screenshots
+
+![TenderPack Dashboard & Tender Information](screenshots/screenshot-1.PNG)
+*Figure 1: TenderPack dashboard with tender specifications and file upload management.*
+
+![Document Upload & Duplicate Detection](screenshots/screenshot-2.PNG)
+*Figure 2: Multi-file upload with SHA-256 content-based duplicate detection and auto-matching.*
+
+![Validation Engine & Expiry Checking](screenshots/screenshot-3.PNG)
+*Figure 3: Reactive document matching checklist with expiry date validation and blocking issues summary.*
+
+![Package Compilation & Success Dialog](screenshots/screenshot-4.PNG)
+*Figure 4: In-browser 16-page unified PDF package compilation and download confirmation modal.*
 
 ---
 
@@ -101,8 +117,8 @@ Using the contest sample pack:
 - **Tender:** `T-2026-0417` (Deadline: `2026-10-20`)
 - **Duplicates Detected:** `experience_cert (1).pdf` identified as exact duplicate of `experience_cert.pdf`.
 - **Expired Document Filtered:** `trade_license_2025.pdf` correctly flagged as Expired; `trade_license_2026.pdf` (expiry `2027-06-30`) marked OK.
-- **Optional Requirements:** `REQ-06` and `REQ-07` correctly marked "Not provided" and skipped from final package.
-- **Final Package Output:** `output/T-2026-0417_Package.pdf` (16 total pages, 1 Cover + 15 document pages) with footer on all 16 pages.
+- **Optional Requirements:** `R06` and `R07` correctly marked "Not provided" and skipped from final package.
+- **Final Package Compilation:** Successfully compiles all valid matched documents into a 16-page unified PDF package (1 Cover + 15 document pages) with official headers, dynamic table of contents, and continuous footers on all 16 pages.
 
 ---
 
